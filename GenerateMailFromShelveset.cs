@@ -144,8 +144,7 @@ namespace crmail
                 shelveset.OwnerName
             );
 
-            // Description/Comment Row
-            string textDescription = this.HtmlEncode(shelveset.Comment);
+            // Description/Comment Row            
             strBuilder.AppendFormat("<tr><td valign=top><b>{0}</b></td><td valign=top>{1}</td></tr>\n", 
                                         Resources.EmailDescription, this.HtmlEncode(shelveset.Comment));
 
@@ -168,9 +167,8 @@ namespace crmail
             {
                 foreach (PendingChange changes in pendingSet.PendingChanges)
                 {
-                    string changeName = changes.ChangeTypeName.Substring(0, 3);
-                    strBuilder.Append(changeName);
-                    if (changes.ChangeType == ChangeType.Edit)
+                    strBuilder.Append(changes.ChangeTypeName);
+                    if ((changes.ChangeType & ChangeType.Edit) == ChangeType.Edit)
                     {
                         strBuilder.AppendFormat(" <a href={0}/history.aspx?item={1}>H</a> ", tfsWebUIServer, changes.ItemId);
                         strBuilder.AppendFormat(" <a href={0}/ann.aspx?item={1}>B</a> ", tfsWebUIServer, changes.ItemId);
@@ -189,8 +187,8 @@ namespace crmail
 
                         strBuilder.AppendLine(string.Format("<a href={0}>{1}</a> <br>",
                             newUrl, changes.ServerItem));
-                    }   
-                    else if (changes.ChangeType == ChangeType.Delete)
+                    }
+                    else if ((changes.ChangeType & ChangeType.Delete) == ChangeType.Delete)
                     {
                         strBuilder.AppendFormat(" <a href={0}/history.aspx?item={1}>H</a> ", tfsWebUIServer, changes.ItemId);
                         strBuilder.AppendFormat(" <a href={0}/ann.aspx?item={1}>B</a> ", tfsWebUIServer, changes.ItemId);
@@ -203,7 +201,7 @@ namespace crmail
                     else
                     {
                         strBuilder.AppendFormat(" H B ");
-                        strBuilder.AppendLine(string.Format("{1} <br>",
+                        strBuilder.AppendLine(string.Format("{0} <br>",
                                changes.ServerItem));
                     }
                 }
